@@ -20,6 +20,7 @@ namespace recipeFinder
 
         protected void Login_Click(object sender, EventArgs e)
         {
+            Output.Text = userClient.getUser(UserName.Text, Password.Text).ToString();
             if (userClient.getUser(UserName.Text, Password.Text))
             {
                 Session["User"] = UserName.Text;
@@ -27,7 +28,7 @@ namespace recipeFinder
             }
             else
             {
-                Output.Text = "Login failed. Please try again!";
+                //Output.Text = "Login failed. Please try again!";
             }
         }
 

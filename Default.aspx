@@ -7,34 +7,34 @@
     <p>
         New User:</p>
     <p>
-        <asp:TextBox ID="newUserName" runat="server"></asp:TextBox>
+        <asp:TextBox ID="newUserName" runat="server" placeholder ="Username"></asp:TextBox>
     </p>
     <p>
-        <asp:TextBox ID="newPassword" runat="server"></asp:TextBox>
+        <asp:TextBox ID="newPassword" input type ="password" runat="server" placeholder ="Password"></asp:TextBox>
     </p>
     <p>
-        <asp:TextBox ID="reNewPassword" runat="server"></asp:TextBox>
+        <asp:TextBox ID="reNewPassword" input type="password" runat="server" placeholder ="Repeat Password"></asp:TextBox>
     </p>
     <p>
-        <asp:Button ID="CreateUser" runat="server" Text="Button" OnClick="CreateUser_Click" />
+        <asp:Button ID="CreateUser" runat="server" Text="Create Account" OnClick="CreateUser_Click" />
     </p>
     <p>
         &nbsp;</p>
     <p>
         Returning User:</p>
     <p>
-        <asp:TextBox ID="UserName" runat="server"></asp:TextBox>
+        <asp:TextBox ID="UserName" runat="server" placeholder ="Username"></asp:TextBox>
    
     
    
     </p>
-    <asp:TextBox ID="Password" runat="server"></asp:TextBox>
+    <asp:TextBox ID="Password" input type="password" runat="server" placeholder ="Password"></asp:TextBox>
     <br />
     <br />
-    <asp:Button ID="Login" runat="server" OnClick="Login_Click" Text="Button" />
+    <asp:Button ID="Login" runat="server" OnClick="Login_Click" Text="Login" />
 
     <br />
     <br />
-    <asp:TextBox ID="Output" runat="server"></asp:TextBox>
+    <asp:Label ID ="Output" runat="server"></asp:Label>
 
 </asp:Content>

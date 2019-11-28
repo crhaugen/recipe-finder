@@ -9,7 +9,15 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            Welcome!!!!!!!!!!!!!!!!!</div>
+            Welcome!!!!!!!!!!!!!!!!!
+        </div>
+        <p>
+        <asp:Button ID="LoadWeather" runat="server" Text="Current Weather in Seattle" OnClick="Load_Current_Weather" />
+        <asp:Button ID="LoadRecipe" runat="server" Text="Find Random Recipe" OnClick="Load_Recipe" />
+        </p>
+        <asp:Label ID ="WeatherInformation" runat="server"></asp:Label>
+        <br/>
+        <asp:Label ID ="RecipeInfo" runat="server"></asp:Label>
     </form>
 </body>
 </html>
