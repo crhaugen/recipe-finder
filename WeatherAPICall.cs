@@ -16,7 +16,7 @@ namespace recipeFinder
             {
 
                 client.BaseAddress = new Uri("http://api.openweathermap.org/data/2.5/");
-                HttpResponseMessage response = client.GetAsync("weather?zip=" + zip + "&APPID=68a17d1cd823a7b3837948dc44884dac").Result;
+                HttpResponseMessage response = client.GetAsync("weather?zip=" + zip + "&APPID=Key").Result;
                 if (response.IsSuccessStatusCode)
                 {
                     string result = response.Content.ReadAsStringAsync().Result;
