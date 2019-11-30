@@ -9,7 +9,18 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            Welcome!!!!!!!!!!!!!!!!!</div>
+            Welcome!!!!!!!!!!!!!!!!!
+            <br />
+            enter zip code:<br />
+            <asp:TextBox ID="Zipcode" runat="server"></asp:TextBox>
+        </div>
+        <p>
+        <asp:Button ID="LoadRecipeGenerator" runat="server" Text="Load Recipe from Generator!" OnClick="Load_Recipe_Generator" />
+        <asp:Button ID="LoadRecipe" runat="server" Text="Find Random Recipe" OnClick="Load_Recipe_Random" style="margin-top: 0px" />
+        </p>
+        <asp:Label ID ="WeatherInformation" runat="server"></asp:Label>
+        <br/>
+        <asp:Label ID ="RecipeInfo" runat="server"></asp:Label>
     </form>
 </body>
 </html>
