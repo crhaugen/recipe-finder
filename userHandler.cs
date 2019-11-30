@@ -12,7 +12,7 @@ namespace recipeFinder
     public class UserHandler
     {
         static string accountName = "recipefinderstorage";
-        static string accountKey = "ADD TABLE ACCOUNT KEY HERE!!!!!!!";
+        static string accountKey = "m1dvddJgzeVILYZWEHBtgJROtiVPZ4bcWzFMsC3ObUAaOzEYcXDeJ888CAWX3I6rUHWq4mENwrS2sDv4YKLh5Q==";
         static string tableStorageName = "userdata";
 
         static StorageCredentials credentials = new StorageCredentials(accountName, accountKey);
