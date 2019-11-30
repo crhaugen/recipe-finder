@@ -15,8 +15,8 @@ namespace recipeFinder
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://api.spoonacular.com/recipes/");
-                string recipe_key = "YOUR API KEY GOES HERE";
-                HttpResponseMessage response = client.GetAsync("random?number=" +recipe_key).Result;
+                string recipe_key = "YOUR RECIPE KEY HERE";
+                HttpResponseMessage response = client.GetAsync("random?number=" + "1&apiKey="+recipe_key).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     string result = response.Content.ReadAsStringAsync().Result;
