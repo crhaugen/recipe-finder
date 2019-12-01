@@ -10,14 +10,19 @@
     <form id="form1" runat="server">
         <div>
             Welcome!!!!!!!!!!!!!!!!!
+            <br />
+            enter zip code:<br />
+            <asp:TextBox ID="Zipcode" runat="server"></asp:TextBox>
         </div>
         <p>
-        <asp:Button ID="LoadWeather" runat="server" Text="Current Weather in Seattle" OnClick="Load_Current_Weather" />
-        <asp:Button ID="LoadRecipe" runat="server" Text="Find Random Recipe" OnClick="Load_Recipe" />
+        <asp:Button ID="LoadRecipeGenerator" runat="server" Text="Load Recipe from Generator!" OnClick="Load_Recipe_Generator" />
+        <asp:Button ID="IsHoliday" runat="server" Text="Is it a holiday today?" OnClick="Is_Holiday" />
+        <asp:Button ID="LoadRecipe" runat="server" Text="Find Random Recipe" OnClick="Load_Recipe_Random" style="margin-top: 0px" />
         </p>
         <asp:Label ID ="WeatherInformation" runat="server"></asp:Label>
         <br/>
         <asp:Label ID ="RecipeInfo" runat="server"></asp:Label>
+        <asp:Label ID ="HolidayInfo" runat="server"></asp:Label>
     </form>
 </body>
 </html>

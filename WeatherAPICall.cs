@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Configuration;
 using System.Web;
 
 namespace recipeFinder
@@ -11,14 +12,12 @@ namespace recipeFinder
     public class weatherAPICall
     {
         public WeatherObject getWeather(string zip)
-        {
-            zip = "98122";
-
+        { 
             using (var client = new HttpClient())
             {
-
                 client.BaseAddress = new Uri("http://api.openweathermap.org/data/2.5/");
-                HttpResponseMessage response = client.GetAsync("weather?zip=" + zip + "&APPID=68a17d1cd823a7b3837948dc44884dac").Result;
+                string weather_API_key = ConfigurationManager.AppSettings["WeatherAPI"];
+                HttpResponseMessage response = client.GetAsync("weather?zip=" + zip + "&APPID=" +weather_API_key).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     string result = response.Content.ReadAsStringAsync().Result;
@@ -28,7 +27,7 @@ namespace recipeFinder
                 }
                 else
                 {
-                    Console.WriteLine("Unsuccsessful request. Please make sure the city name is spelled correctly");
+                    Debug.WriteLine("Unsuccsessful request. Please make sure the city name is spelled correctly");
                 }
             }
             return null;

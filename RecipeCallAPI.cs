@@ -5,32 +5,99 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
+using System.Configuration;
 
 namespace recipeFinder
 {
     public class RecipeAPICall
     {
-        public RecipeObject getRandomRecipe()
+        public string getRandomRecipe()
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://api.spoonacular.com/recipes/");
-                string recipe_key = "YOUR RECIPE KEY HERE";
-                HttpResponseMessage response = client.GetAsync("random?number=" + "1&apiKey="+recipe_key).Result;
+                string recipe_key = ConfigurationManager.AppSettings["RecipeAPI"];
+                HttpResponseMessage response = client.GetAsync("random?number=1&apiKey=" + recipe_key).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     string result = response.Content.ReadAsStringAsync().Result;
                     //Debug.WriteLine(result);
                     RecipeObject recipe = JsonConvert.DeserializeObject<RecipeObject>(result);
-                    return recipe;
+
+                    return getRecipeInformation(recipe);
                 }
                 else
                 {
-                    Debug.WriteLine("Unsuccsessful request. Please make sure the city name is spelled correctly");
-                
+                    Debug.WriteLine("Unsuccsessful request.");
+
                 }
             }
             return null;
+        }
+
+        public string getRecipeBytype(string typeOfFood)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://api.spoonacular.com/recipes/");
+                string recipe_key = ConfigurationManager.AppSettings["RecipeAPI"];
+                HttpResponseMessage response = client.GetAsync("search?query=" + typeOfFood + "&number=1&apiKey=" + recipe_key).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    Debug.WriteLine("typeOfFood " + typeOfFood);
+                    string result = response.Content.ReadAsStringAsync().Result;
+                    Rootobject recipe = JsonConvert.DeserializeObject<Rootobject>(result);
+
+                    string id = recipe.results[0].id.ToString();
+                    HttpResponseMessage infoResponse = client.GetAsync(id + "/information?&apiKey=" + recipe_key).Result;
+
+                    if (infoResponse.IsSuccessStatusCode)
+                    {
+                        string infoResult = infoResponse.Content.ReadAsStringAsync().Result;
+                        Recipe recipeInfo = JsonConvert.DeserializeObject<Recipe>(infoResult);
+
+                        RecipeObject newRecipe = new RecipeObject();
+                        newRecipe.recipes = new Recipe[1];
+                        newRecipe.recipes[0] = recipeInfo;
+                        return getRecipeInformation(newRecipe);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Unsuccsessful request. ");
+                        return null;
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine("Unsuccsessful request. ");
+                    return null;
+                }
+            }
+        }
+
+        private string getRecipeInformation(RecipeObject recipe)
+        {
+            string ingredients = "Ingredients: <br><br>";
+            for (int i = 0; i < recipe.recipes[0].extendedIngredients.Length; i++)
+            {
+                var currentIngredient = recipe.recipes[0].extendedIngredients[i];
+                ingredients = ingredients + currentIngredient.measures.us.amount + " " + currentIngredient.measures.us.unitShort + " " + currentIngredient.name + "<br>";
+            }
+
+            string instructions = "<br> Instructions: <br><br>";
+            for (int j = 0; j < recipe.recipes[0].analyzedInstructions.Length; j++)
+            {
+                var currentInstruction = recipe.recipes[0].analyzedInstructions[j];
+                string steps = "";
+                for (int k = 0; k < recipe.recipes[0].analyzedInstructions[j].steps.Length; k++)
+                {
+                    var currentStep = currentInstruction.steps[k];
+                    steps = steps + currentStep.number.ToString() + ":   " + currentStep.step + "<br>";
+                }
+                instructions = instructions + currentInstruction.name + steps;
+            }
+
+            return recipe.recipes[0].title + "<br><br>" + ingredients + instructions;
         }
     }
 
@@ -156,4 +223,25 @@ namespace recipeFinder
         public string image { get; set; }
     }
 
+
+    public class Rootobject
+    {
+        public Result[] results { get; set; }
+        public string baseUri { get; set; }
+        public int offset { get; set; }
+        public int number { get; set; }
+        public int totalResults { get; set; }
+        public int processingTimeMs { get; set; }
+        public long expires { get; set; }
+    }
+
+    public class Result
+    {
+        public int id { get; set; }
+        public string title { get; set; }
+        public int readyInMinutes { get; set; }
+        public int servings { get; set; }
+        public string image { get; set; }
+        public string[] imageUrls { get; set; }
+    }
 }

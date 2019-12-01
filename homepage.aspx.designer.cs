@@ -24,13 +24,31 @@ namespace recipeFinder
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// LoadWeather control.
+        /// Zipcode control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button LoadWeather;
+        protected global::System.Web.UI.WebControls.TextBox Zipcode;
+
+        /// <summary>
+        /// LoadRecipeGenerator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button LoadRecipeGenerator;
+
+        /// <summary>
+        /// IsHoliday control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button IsHoliday;
 
         /// <summary>
         /// LoadRecipe control.
@@ -58,5 +76,14 @@ namespace recipeFinder
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label RecipeInfo;
+
+        /// <summary>
+        /// HolidayInfo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label HolidayInfo;
     }
 }

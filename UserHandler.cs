@@ -6,47 +6,44 @@ using System.Diagnostics;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Table;
-//using Microsoft.WindowsAzure.Storage.Auth;
-//using Microsoft.WindowsAzure.Storage.Table;
+using System.Configuration;
 
 namespace recipeFinder
 {
     public class UserHandler
     {
-        static string accountname = "css436program4storage";
-        static string accountkey = "YOUR KEY GOES HERE";
-        static string tablestoragename = "userdata";
 
-        static StorageCredentials credentials = new StorageCredentials(accountname, accountkey);
-        static CloudStorageAccount storageaccount = new CloudStorageAccount(credentials, useHttps: true);
+        static string tableStorageName = "userdata";
 
-        static CloudTableClient cloudtableclient = storageaccount.CreateCloudTableClient();
-        CloudTable table = cloudtableclient.GetTableReference(tablestoragename);
+        static CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["TableConnectionString"]);
 
-        public bool userExist(string username)
-        {
+        static CloudTableClient cloudTableClient = storageAccount.CreateCloudTableClient();
+        CloudTable table = cloudTableClient.GetTableReference(tableStorageName);
+
+        public bool userExist(string userName)
+        {  
             //see if user is already in database
             TableQuery<DynamicTableEntity> query = new TableQuery<DynamicTableEntity>()
-                   .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, username));
+                   .Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, userName));
 
             return (table.ExecuteQuery(query).Count() > 0) ? true : false;
         }
 
-        public bool createUser(string username, string password, string reenteredpassword)
+        public bool createUser(string userName, string password, string reenteredPassword)
         {
-            if (!password.Equals(reenteredpassword))
+            if(!password.Equals(reenteredPassword))
             {
                 return false;
             }
 
-            DynamicTableEntity tableentity;
+            DynamicTableEntity tableEntity;
 
             try
             {
                 //add the entity into the table
                 var dict = new Dictionary<string, EntityProperty> { };
-                tableentity = new DynamicTableEntity(username, password, "*", dict);
-                table.Execute(TableOperation.InsertOrReplace(tableentity));
+                tableEntity = new DynamicTableEntity(userName, password, "*", dict);
+                table.Execute(TableOperation.InsertOrReplace(tableEntity));
             }
             catch (Exception ex)
             {
@@ -57,16 +54,16 @@ namespace recipeFinder
             return true;
         }
 
-        public bool getUser(string username, string password)
+        public bool getUser(string userName, string password)
         {
 
             string filter = TableQuery.CombineFilters(
-                   TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, username),
+                   TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, userName),
                    TableOperators.And,
                    TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, password));
 
             TableQuery<DynamicTableEntity> query = new TableQuery<DynamicTableEntity>().Where(filter);
-
+            
             return (table.ExecuteQuery(query).Count() > 0) ? true : false;
         }
     }
