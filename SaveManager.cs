@@ -35,7 +35,7 @@ namespace recipeFinder
             //var account = query.First();
             Dictionary<string, EntityProperty> URLS = new Dictionary<string, EntityProperty>();
             URLS.Add("BlobURL", new EntityProperty(blobURL));
-            string rowKey = recipeName;
+            string rowKey = recipeName.Replace(@"/", "");
             var newEntity = new DynamicTableEntity(username, rowKey, "*", URLS);
             TableOperation operation = TableOperation.InsertOrReplace(newEntity);
             table.Execute(operation);
