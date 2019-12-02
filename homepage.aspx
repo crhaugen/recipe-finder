@@ -1,13 +1,7 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="homepage.aspx.cs" Inherits="recipeFinder.homepage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/Site.Master" CodeBehind="homepage.aspx.cs" Inherits="recipeFinder.homepage" %>
 
-<!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title></title>
-</head>
-<body>
-    <form id="form1" runat="server">
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <body>
         <div>
             Welcome!!!!!!!!!!!!!!!!!
             <br />
@@ -21,8 +15,10 @@
         </p>
         <asp:Label ID ="WeatherInformation" runat="server"></asp:Label>
         <br/>
+        <asp:Label ID ="RecipeName" runat="server"></asp:Label>
+        <br />
         <asp:Label ID ="RecipeInfo" runat="server"></asp:Label>
         <asp:Label ID ="HolidayInfo" runat="server"></asp:Label>
-    </form>
-</body>
-</html>
+        <asp:Button ID="SaveButton" runat="server" Text="Save Recipe!" OnClick="Save_Recipe" />
+    </body>
+</asp:Content>

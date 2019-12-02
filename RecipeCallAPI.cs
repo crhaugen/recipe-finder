@@ -11,6 +11,8 @@ namespace recipeFinder
 {
     public class RecipeAPICall
     {
+        string recipeName = "";
+
         public string getRandomRecipe()
         {
             using (var client = new HttpClient())
@@ -33,6 +35,10 @@ namespace recipeFinder
                 }
             }
             return null;
+        }
+        public string getRecipeName()
+        {
+            return recipeName;
         }
 
         public string getRecipeBytype(string typeOfFood)
@@ -96,8 +102,8 @@ namespace recipeFinder
                 }
                 instructions = instructions + currentInstruction.name + steps;
             }
-
-            return recipe.recipes[0].title + "<br><br>" + ingredients + instructions;
+            recipeName = recipe.recipes[0].title;
+            return ingredients + instructions;
         }
     }
 

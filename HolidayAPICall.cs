@@ -66,7 +66,7 @@ namespace recipeFinder
         public Date date { get; set; }
         public string[] type { get; set; }
         public string locations { get; set; }
-        public string states { get; set; }
+        public object states { get; set; }
     }
 
     public class Date

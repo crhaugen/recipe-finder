@@ -8,6 +8,7 @@ using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Table;
 using System.Configuration;
 
+
 namespace recipeFinder
 {
     public class UserHandler
@@ -15,7 +16,7 @@ namespace recipeFinder
 
         static string tableStorageName = "userdata";
 
-        static CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["TableConnectionString"]);
+        static CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["ConnectionString"]);
 
         static CloudTableClient cloudTableClient = storageAccount.CreateCloudTableClient();
         CloudTable table = cloudTableClient.GetTableReference(tableStorageName);
