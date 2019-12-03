@@ -5,33 +5,45 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
+using System.Configuration;
+using System.Threading;
+
 
 namespace recipeFinder
 {
     public class RecipeAPICall
     {
+        string recipeName = "";
+
         public string getRandomRecipe()
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://api.spoonacular.com/recipes/");
-                string recipe_key = "589c2f802a2141ad89a1813cc6ec9f71";
-                HttpResponseMessage response = client.GetAsync("random?number=1&apiKey=" + recipe_key).Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    string result = response.Content.ReadAsStringAsync().Result;
-                    //Debug.WriteLine(result);
-                    RecipeObject recipe = JsonConvert.DeserializeObject<RecipeObject>(result);
+                string recipe_key = ConfigurationManager.AppSettings["RecipeAPI"];
 
-                    return getRecipeInformation(recipe);
-                }
-                else
+                for (int i = 0; i < 4; i++)
                 {
-                    Debug.WriteLine("Unsuccsessful request.");
+                    HttpResponseMessage response = client.GetAsync("random?number=1&apiKey=" + recipe_key).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = response.Content.ReadAsStringAsync().Result;
+                        RecipeObject recipe = JsonConvert.DeserializeObject<RecipeObject>(result);
 
+                        return getRecipeInformation(recipe);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Unsuccsessful request. Status code: " + response.StatusCode);
+                        Thread.Sleep(2000 * i);
+                    }
                 }
             }
             return null;
+        }
+        public string getRecipeName()
+        {
+            return recipeName;
         }
 
         public string getRecipeBytype(string typeOfFood)
@@ -39,7 +51,7 @@ namespace recipeFinder
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://api.spoonacular.com/recipes/");
-                string recipe_key = "589c2f802a2141ad89a1813cc6ec9f71";
+                string recipe_key = ConfigurationManager.AppSettings["RecipeAPI"];
                 HttpResponseMessage response = client.GetAsync("search?query=" + typeOfFood + "&number=1&apiKey=" + recipe_key).Result;
                 if (response.IsSuccessStatusCode)
                 {
@@ -95,8 +107,8 @@ namespace recipeFinder
                 }
                 instructions = instructions + currentInstruction.name + steps;
             }
-
-            return recipe.recipes[0].title + "<br><br>" + ingredients + instructions;
+            recipeName = recipe.recipes[0].title;
+            return ingredients + instructions;
         }
     }
 

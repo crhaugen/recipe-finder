@@ -11,6 +11,12 @@ namespace recipeFinder
         private int getCurrentTemp(string zipCode)
         {
             weatherAPICall weather = new weatherAPICall();
+
+            if(weather == null)
+            {
+                return 50;
+            }
+
             WeatherObject weatherInfo = weather.getWeather(zipCode);
             float kelvinTemp = weatherInfo.main.temp;
             int temp = (int)((kelvinTemp - 273.15) * 1.8 + 32);
@@ -20,8 +26,21 @@ namespace recipeFinder
         private string getCurrentWeather(string zipCode)
         {
             weatherAPICall weather = new weatherAPICall();
+
+            if (weather == null)
+            {
+                return "clear";
+            }
+
             WeatherObject weatherInfo = weather.getWeather(zipCode);
             return weatherInfo.weather[0].main;
+        }
+
+        private string getHoliday()
+        {
+            HolidayAPICall holiday = new HolidayAPICall();
+            DateTime today = DateTime.Today;
+            return holiday.getHoliday(today);
         }
 
         public string generateRecipeType(string zipCode)
@@ -31,9 +50,9 @@ namespace recipeFinder
             string weather = getCurrentWeather(zipCode).ToLower();
 
 
-            if(temp <= 32)
+            if (temp <= 32)
             {
-                if(weather == "rain" || weather == "snow" || weather == "clear")
+                if (weather == "rain" || weather == "snow" || weather == "clear")
                 {
                     typeOfFood = "soup";
                 }
@@ -41,14 +60,14 @@ namespace recipeFinder
                 {
                     typeOfFood = "casserole";
                 }
-            } 
-            else if(temp <= 60)
+            }
+            else if (temp <= 60)
             {
                 if (weather == "rain")
                 {
                     typeOfFood = "pasta";
                 }
-                else if(weather == "clear")
+                else if (weather == "clear")
                 {
                     typeOfFood = "spicy";
                 }
@@ -57,7 +76,7 @@ namespace recipeFinder
                     typeOfFood = "chocolate";
                 }
             }
-            else if(temp <= 80)
+            else if (temp <= 80)
             {
                 if (weather == "rain")
                 {
