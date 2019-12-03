@@ -64,7 +64,7 @@ namespace recipeFinder
         {
             HolidayAPICall holiday = new HolidayAPICall();
             DateTime today = DateTime.Today;
-            HolidayInfo.Text = holiday.getHoliday(today);
+            //HolidayInfo.Text = holiday.getHoliday(today);
         }
 
         protected void Save_Recipe(object sender, EventArgs e)
@@ -74,11 +74,11 @@ namespace recipeFinder
                 SaveManager saved = new SaveManager();
                 string username = Session["User"].ToString();
                 saved.addRecipe(RecipeName.Text, RecipeInfo.Text, username);
-                HolidayInfo.Text = "Recipe Saved!";
+                Info.Text = "Recipe Saved!";
             }
             else
             {
-                HolidayInfo.Text = "No recipe to save. Please generate or load a recipe";
+                Info.Text = "No recipe to save. Please generate or load a recipe";
             }
         }
     }
