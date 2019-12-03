@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.WindowsAzure.Storage;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,6 +11,7 @@ namespace recipeFinder
 {
     public partial class homepage : System.Web.UI.Page
     {
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["User"] == null)
@@ -22,15 +25,61 @@ namespace recipeFinder
             RecipeGenerator recipeGenerator = new RecipeGenerator();
             string foodType = recipeGenerator.generateRecipeType(Zipcode.Text);
             RecipeAPICall recipeCall = new RecipeAPICall();
-            RecipeInfo.Text = recipeCall.getRecipeBytype(foodType);
+            string type = recipeCall.getRecipeBytype(foodType);
+            string name = recipeCall.getRecipeName();
 
+            if(type == null || name == null)
+            {
+                RecipeInfo.Text = "Sorry. Could not load recipe at the moment, please try again later.";
+              
+            }
+            else
+            {
+                RecipeInfo.Text = type;
+                RecipeName.Text = name;
+            }
+          
         }
 
         protected void Load_Recipe_Random(object sender, EventArgs e)
         {
             RecipeAPICall recipeCall = new RecipeAPICall();
-            RecipeInfo.Text = recipeCall.getRandomRecipe();
 
+            string type = recipeCall.getRandomRecipe();
+            string name = recipeCall.getRecipeName();
+
+            if (type == null || name == null)
+            {
+                RecipeInfo.Text = "Sorry. Could not load recipe at the moment, please try again later.";
+
+            }
+            else
+            {
+                RecipeInfo.Text = type;
+                RecipeName.Text = name;
+            }
+
+        }
+        protected void Is_Holiday(object sender, EventArgs e)
+        {
+            HolidayAPICall holiday = new HolidayAPICall();
+            DateTime today = DateTime.Today;
+            HolidayInfo.Text = holiday.getHoliday(today);
+        }
+
+        protected void Save_Recipe(object sender, EventArgs e)
+        {
+            if (RecipeInfo.Text.Length > 0)
+            {
+                SaveManager saved = new SaveManager();
+                string username = Session["User"].ToString();
+                saved.addRecipe(RecipeName.Text, RecipeInfo.Text, username);
+                HolidayInfo.Text = "Recipe Saved!";
+            }
+            else
+            {
+                HolidayInfo.Text = "No recipe to save. Please generate or load a recipe";
+            }
         }
     }
 }

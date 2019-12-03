@@ -15,15 +15,6 @@ namespace recipeFinder
     {
 
         /// <summary>
-        /// form1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
-
-        /// <summary>
         /// Zipcode control.
         /// </summary>
         /// <remarks>
@@ -40,6 +31,15 @@ namespace recipeFinder
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button LoadRecipeGenerator;
+
+        /// <summary>
+        /// IsHoliday control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button IsHoliday;
 
         /// <summary>
         /// LoadRecipe control.
@@ -60,6 +60,15 @@ namespace recipeFinder
         protected global::System.Web.UI.WebControls.Label WeatherInformation;
 
         /// <summary>
+        /// RecipeName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label RecipeName;
+
+        /// <summary>
         /// RecipeInfo control.
         /// </summary>
         /// <remarks>
@@ -67,5 +76,23 @@ namespace recipeFinder
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label RecipeInfo;
+
+        /// <summary>
+        /// HolidayInfo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label HolidayInfo;
+
+        /// <summary>
+        /// SaveButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button SaveButton;
     }
 }
