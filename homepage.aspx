@@ -22,6 +22,11 @@
         <asp:Button ID="SaveButton" runat="server" Text="Save Recipe!" OnClick="Save_Recipe" />
     </body>--%>
 
+    <div class="topnav">
+        <a class="active" href="#home">Home Page</a>
+        <a href="/SavedRecipes">Saved Recipes</a>
+    </div>
+
     <div class="login-page">
         <div class="form">
             <p style="font-size: large;">

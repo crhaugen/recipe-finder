@@ -26,13 +26,13 @@ namespace recipeFinder
 
             if (recipeNameAndURL == null)
             {
-                RecipeList.Text = "Sorry. Recipe could not load, please try again later.";
+                //RecipeList.Text = "Sorry. Recipe could not load, please try again later.";
             }
             else
             {
                 foreach (var recipe in recipeNameAndURL)
                 {
-                    RecipeList.Text = RecipeList.Text + recipe.Key + "<br>";
+                    //RecipeList.Text = RecipeList.Text + recipe.Key + "<br>";
                 }
             }
         }
