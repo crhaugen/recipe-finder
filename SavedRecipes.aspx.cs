@@ -1,4 +1,23 @@
-﻿using System;
+﻿/*
+ * Chyanne Haugen and Kathleen Guinee
+ * CSS 436 Program 5
+ * Last edited on 12/07/2019
+ * 
+ * 
+ * This is the c# file that controls the buttons and functionality of the Saved Recipes page. 
+
+The buttons are available on this page:
+
+See more recipes -- this button returns the next 9 recipes stored in the azure recipe table where the rowkey matches the 
+                    user's username. If it is the last page, and the user clicks this button, they are returned to the first 9 recipes.
+
+Assumptions for the use of this webpage are as follows: 
+
+Items stored in the table are assumed to have valid syntax. Sometimes the title of recipes will have characters that are
+not allowed in Azure table/blob storage. In this case, nothing will be displayed.
+
+*/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,7 +33,9 @@ namespace recipeFinder
         static int pageNumber = 1;
         static int totalNumOfRecipes = 0;
 
-
+//if the user is not logged in, this will redirect them to the log in page. Otherwise, it loads up the stored recipes
+//and displays them as an accordion.
+//---------------------Page_Load(object sender, EventArgs e)----------------------------------------
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["User"] == null)
@@ -24,7 +45,10 @@ namespace recipeFinder
             initializeLabelsArray();
             load_recipes(pageNumber);
             ViewFraction.Text = "Currently seeing page " + pageNumber + "/ " + Math.Ceiling(totalNumOfRecipes / 9.0);
-        }
+        }//end Page_Load()
+
+//displays the next 9 recipes stored in the azure table query associated with this user.
+//---------------------------Next_Recipes_Click(object sender, EventArgs e)
         protected void Next_Recipes_Click(object sender, EventArgs e)
         {
             if (pageNumber < Math.Ceiling(totalNumOfRecipes / 9.0))
@@ -37,7 +61,10 @@ namespace recipeFinder
             }
             load_recipes(pageNumber);
             ViewFraction.Text = "Currently seeing page " + pageNumber + "/ " + Math.Ceiling(totalNumOfRecipes / 9.0) + " Recipes";
-        }
+        }//end Next_Recipes_Click()
+
+//private helper function that creates an array of all of the labels in the html page.
+//--------------------initializLabelsArray() ---------------------------------
         private void initializeLabelsArray()
         {
             recipeTitles[0] = Recipe1;
@@ -59,8 +86,11 @@ namespace recipeFinder
             recipeInfo[6] = Recipe7Info;
             recipeInfo[7] = Recipe8Info;
             recipeInfo[8] = Recipe9Info;
-        }
+        }//end initializeLabelsArray()
 
+//private helper function that loads all of the information from the table query (using the username as the partitionkey)
+//and displays them through the labels.
+//---------------------load_recipes(int pageNumber) ----------------------
         private void load_recipes(int pageNumber)
     {
             SaveManager sm = new SaveManager();
@@ -92,7 +122,7 @@ namespace recipeFinder
                     index++;
                 }
             }
-        }
+        }//end load_recipes()
 
     }
 }
