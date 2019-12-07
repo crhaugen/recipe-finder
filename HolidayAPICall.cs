@@ -1,4 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿/*
+ * Chyanne Haugen and Kathleen Guinee
+ * CSS 436 Program 6
+ * Last edited on 12/07/2019
+ * 
+ * 
+ * This file controls API calls for the holiday api (calendarific.com). Information about the holidays are used in
+ * the generation of recipe reccomendations, which can be found in RecipeGenerator.cs
+*/
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +21,9 @@ namespace recipeFinder
 {
     public class HolidayAPICall
     {
+//this function returns the name of a holiday for a given date. The holidays are assumed to be in the United States,
+//but may also return holidays in the UK.
+//------------------getHoliday(DateTime date) -----------------------------------------
         public string getHoliday(DateTime date)
         {
             string year = date.Year.ToString();
@@ -47,8 +59,10 @@ namespace recipeFinder
             }
             return null;
         }
-    }
+    }//end getHoliday()
 
+//The following class and data is created from the special paste options for creating classes out of JSON. Holiday information is 
+//stored in these classes. 
     public class HolidayObject
     {
         public Meta meta { get; set; }
