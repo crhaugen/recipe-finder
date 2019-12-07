@@ -1,4 +1,21 @@
-﻿using System;
+﻿/*
+ * Chyanne Haugen and Kathleen Guinee
+ * CSS 436 Program 6
+ * Last edited on 12/07/2019
+ *
+ * This is the c# file that controls save recipes data for the user.
+ *
+ * Uses azure blob storage to save the users recipes.
+ * 
+ * getBlobContents(string recipeTitle) - This method will return a recipes as a string, recipes is found by given title
+ * 
+ * getSavedRecipes(string username) - This method returns all the recipe that a given user has saved
+ * 
+ * addRecipe(string recipeName, string recipe, string username) - This method add the recipe as a text file into blob storage
+ * 
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,30 +31,25 @@ namespace recipeFinder
 {
     public class SaveManager
     {
-        static string accountKey = ConfigurationManager.AppSettings["TableConnectionString"];
-        static string tableStorageName = "savedrecipes";
-        static string blobStorageName = "recipecontainer";
-        static string accountName = "recipefinderstorage";
-
-        static StorageCredentials credentials = new StorageCredentials(accountName, accountKey);
-        static CloudStorageAccount storageAccount = new CloudStorageAccount(credentials, useHttps: true);
-
-       // static CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["TableConnectionString"]);
+        static CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["ConnectionString"]);
         static CloudTableClient cloudTableClient = storageAccount.CreateCloudTableClient();
         static CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
-        
+        static string tableStorageName = "savedrecipes";
+        static string blobStorageName = "recipecontainer";
 
         CloudTable table = cloudTableClient.GetTableReference(tableStorageName);
         CloudBlobContainer blobContainer = blobClient.GetContainerReference(blobStorageName);
 
+        //This method add the recipe as a text file into blob storage.
+        //------------------ addRecipe(string recipeName, string recipe, string username)----------------
         public bool addRecipe(string recipeName, string recipe, string username)
         {
             CloudBlockBlob blob;
 
             try
             {
-                string fileName = recipeName + ".txt";
+                string fileName = recipeName.Replace(@"/", "") + ".txt";
                 blob = blobContainer.GetBlockBlobReference(fileName);
                 blob.UploadText(recipe);
             }
@@ -66,7 +78,10 @@ namespace recipeFinder
 
             return true;
         }
-        public Dictionary<string, Uri> getSavedRecipes(string username)
+
+        //This method returns all the recipe that a given user has saved.
+        //------------------getSavedRecipes(string username)----------------
+        public List<string> getSavedRecipes(string username)
         {
             try
             {
@@ -74,21 +89,45 @@ namespace recipeFinder
                             where entity.PartitionKey.Equals(username)
                             select entity;
 
-                Dictionary<string, Uri> returnDic = new Dictionary<string, Uri>();
+                List<string> returnList = new List<string>();
+               // Dictionary<string, Uri> returnDic = new Dictionary<string, Uri>();
 
 
                 foreach (DynamicTableEntity entity in query)
                 {
-                    Uri uri = new Uri(entity["BlobURL"].StringValue);
-                    returnDic.Add(entity.RowKey, uri);
+                    returnList.Add(entity.RowKey);
+                    //Uri uri = new Uri(entity["BlobURL"].StringValue);
+                    //returnDic.Add(entity.RowKey, uri);
                 }
-                return returnDic;
+                return returnList;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 return null;
             }
+        }
+
+        //https://social.msdn.microsoft.com/Forums/azure/en-US/d640e0b4-3800-47b4-8772-28fd33e2ce17/how-to-read-and-write-a-files-from-blob-storage?forum=windowsazuredata
+        //This method will return a recipes as a string, recipe is found by given title.
+        //------------------getBlobContents(string recipeTitle)----------------
+        public string getBlobContents(string recipeTitle)
+        {
+            CloudBlob blob = blobContainer.GetBlobReference(recipeTitle + ".txt");
+            string content;
+
+            if (!blob.Exists())
+            {
+                content = "";
+            }
+            else
+            {
+                using (StreamReader reader = new StreamReader(blob.OpenRead()))
+                {
+                    content = reader.ReadToEnd();
+                }
+            }
+            return content;
         }
 
     }

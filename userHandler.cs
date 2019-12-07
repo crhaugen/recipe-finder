@@ -5,7 +5,7 @@
  * 
  * 
  * This is the c# file that controls setting up a user. This class will either create a new user or be
- * used to login a returning user
+ * used to login a returning user.
  * 
  * Uses azure table storage to save usernames and passwords
  *
@@ -41,7 +41,7 @@ namespace recipeFinder
         CloudTable table = cloudTableClient.GetTableReference(tableStorageName);
 
 
-        //Method returns true or false depending on if a username is already taken
+        //Method returns true or false depending on if a username is already taken.
         //-----------------------------------------userExist(string userName)----------------------------------------
         public bool userExist(string userName)
         {
@@ -61,7 +61,7 @@ namespace recipeFinder
         }
 
        
-        //Creates a new user with given username and password
+        //Creates a new user with given username and password.
         //---------------createUser(string userName, string password, string reenteredPassword)----------
         public bool createUser(string userName, string password, string reenteredPassword)
         {

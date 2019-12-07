@@ -4,7 +4,7 @@
  * Last edited on 12/07/2019
  * 
  * 
- * This is the c# file that controls the Weather API and all calls to openweathermap API
+ * This is the c# file that controls the Weather API and all calls to openweathermap API.
  *
  * getWeather(string zip) - Gets weather data from the openweathermap API, JSON data is then parsed into 
  * a class for use in other parts of the program.
