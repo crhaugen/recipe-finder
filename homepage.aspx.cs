@@ -39,6 +39,7 @@ namespace recipeFinder
             {
                 RecipeInfo.Text = type;
                 RecipeName.Text = name;
+                RecipeImage.Visible = true;
                 RecipeImage.ImageUrl = imgURL;
             }
           

@@ -28,7 +28,7 @@ namespace recipeFinder
         }
         protected void Next_Recipes_Click(object sender, EventArgs e)
         {
-            if (pageNumber < totalNumOfRecipes)
+            if (pageNumber < Math.Ceiling(totalNumOfRecipes / 9.0))
             {
                 pageNumber++;
             }
