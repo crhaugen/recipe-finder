@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -18,6 +19,12 @@ namespace recipeFinder
             }
 
             WeatherObject weatherInfo = weather.getWeather(zipCode);
+            
+            if (weatherInfo == null)
+            {
+                return 50;
+            }
+
             float kelvinTemp = weatherInfo.main.temp;
             int temp = (int)((kelvinTemp - 273.15) * 1.8 + 32);
             return temp;
@@ -33,14 +40,34 @@ namespace recipeFinder
             }
 
             WeatherObject weatherInfo = weather.getWeather(zipCode);
+
+            if (weatherInfo == null)
+            {
+                return "clear";
+            }
+
             return weatherInfo.weather[0].main;
         }
 
-        private string getHoliday()
+        private string getHoliday(DateTime date)
         {
             HolidayAPICall holiday = new HolidayAPICall();
-            DateTime today = DateTime.Today;
-            return holiday.getHoliday(today);
+            //DateTime today = DateTime.Today;
+
+            if (holiday == null)
+            {
+                return "notHoliday";
+            }
+
+            string holidayResults = holiday.getHoliday(date);
+
+            if (holidayResults == null)
+            {
+                return "notHoliday";
+            }
+
+            //Debug.WriteLine(holidayResults);
+            return holiday.getHoliday(date);
         }
 
         public string generateRecipeType(string zipCode)
@@ -49,8 +76,34 @@ namespace recipeFinder
             int temp = getCurrentTemp(zipCode);
             string weather = getCurrentWeather(zipCode).ToLower();
 
+            DateTime today = DateTime.Today;
+            if (getHoliday(today).ToLower().Contains("christmas"))
+            {
+                typeOfFood = "christmas";
+                
+            }
+            else if(getHoliday(today).ToLower().Contains("thanksgiving"))
+            {
+                typeOfFood = "thanksgiving";
+            }
 
-            if (temp <= 32)
+            else if (getHoliday(today).ToLower().Contains("independence day"))
+            {
+                typeOfFood = "hotdog";
+            
+            }
+
+            else if (getHoliday(today).ToLower().Contains("easter"))
+            {
+                typeOfFood = "ham";
+            }
+            //halloween, for some reason the API returned "world cities' day" first 
+            else if (getHoliday(today).ToLower().Contains("world cities"))
+            {
+                typeOfFood = "candy";
+            }
+
+            else if (temp <= 32)
             {
                 if (weather == "rain" || weather == "snow" || weather == "clear")
                 {
