@@ -1,4 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿/*
+ * Chyanne Haugen and Kathleen Guinee
+ * CSS 436 Program 6
+ * Last edited on 12/07/2019
+ * 
+ * 
+ * This file controls API calls for the recipe api (spoonacular.com). The random query is used for all of the recipe reccomendations
+ * recommendations are returned to the generator and homepage.
+*/
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,6 +26,8 @@ namespace recipeFinder
         string imageURL = "";
         int ID = 0;
 
+//returns a random recipe from the spoonacular api
+//------------------------ getRandomRecipe() -----------------------------------------------------------
         public string getRandomRecipe()
         {
             using (var client = new HttpClient())
@@ -24,6 +35,7 @@ namespace recipeFinder
                 client.BaseAddress = new Uri("https://api.spoonacular.com/recipes/");
                 string recipe_key = ConfigurationManager.AppSettings["RecipeAPI"];
 
+                //retry logic
                 for (int i = 0; i < 4; i++)
                 {
                     HttpResponseMessage response = client.GetAsync("random?number=1&apiKey=" + recipe_key).Result;
@@ -35,24 +47,33 @@ namespace recipeFinder
                         return getRecipeInformation(recipe);
                     }
                     else
-                    {
+                    {//wait and try again
                         Debug.WriteLine("Unsuccsessful request. Status code: " + response.StatusCode);
                         Thread.Sleep(2000 * i);
                     }
                 }
             }
             return null;
-        }
+        }//end getRandomRecipe()
 
+//returns the recipe's image url, which is stored in this class
+//------------------------------------getImgURL() ------------------------------------------------------
         public string getImgURL()
         {
             return imageURL;
-        }
+        }//end getImgURL()
+
+//returns the recipe's Title
+//----------------------------getRecipeName() ------------------------------------------------------------
         public string getRecipeName()
         {
             return recipeName;
-        }
+        }//end getRecipeName()
 
+//this function is used after the generator decides on a tag to use. The tag is included as the string, then the 
+//getRecipeByType function returns a random recipe that contains that tag. From the spoonacular documentation, 
+//it appears that tags are user-generated.
+//----------------------------------getRecipeBytype(string) -----------------------------------------------
         public string getRecipeBytype(string typeOfFood)
         {
             using (var client = new HttpClient())
@@ -60,28 +81,36 @@ namespace recipeFinder
                 client.BaseAddress = new Uri("https://api.spoonacular.com/recipes/");
                 string recipe_key = ConfigurationManager.AppSettings["RecipeAPI"];
                 string url = "random?number=1&tags=" + typeOfFood + "&apiKey=" + recipe_key;
-                //"search?query=" + typeOfFood + "&number=1&apiKey=" + recipe_key
-                HttpResponseMessage response = client.GetAsync(url).Result;
-                if (response.IsSuccessStatusCode)
+                
+                //retry logic
+                for(int i = 0; i <4; i++)
                 {
-                    Debug.WriteLine("typeOfFood " + typeOfFood);
-                    string result = response.Content.ReadAsStringAsync().Result;
-                    RecipeObject recipe = JsonConvert.DeserializeObject<RecipeObject>(result);
+                    HttpResponseMessage response = client.GetAsync(url).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Debug.WriteLine("typeOfFood " + typeOfFood);
+                        string result = response.Content.ReadAsStringAsync().Result;
+                        RecipeObject recipe = JsonConvert.DeserializeObject<RecipeObject>(result);
 
-                    return getRecipeInformation(recipe);
+                        return getRecipeInformation(recipe);
+                    }
+                    else
+                    {//wait and try again
+                        Debug.WriteLine("Unsuccsessful request. ");
+                        Thread.Sleep(2000 * i);
+                    }
                 }
-                else
-                {
-                    Debug.WriteLine("Unsuccsessful request. ");
-                    return null;
-                }
+                return null;
             }
-        }
+        }//end getRecipeByType
 
-        
+ //returns all of the ingredients and instructions for a given recipe object as a string, which is passed on to 
+ //the homepage for display.
+ //-----------------------------------------getRecipeInformation(RecipeObject) ----------------------------------------
         private string getRecipeInformation(RecipeObject recipe)
         {
             string ingredients = "Ingredients: <br><br>";
+            //iterate through ingredients
             for (int i = 0; i < recipe.recipes[0].extendedIngredients.Length; i++)
             {
                 var currentIngredient = recipe.recipes[0].extendedIngredients[i];
@@ -89,10 +118,12 @@ namespace recipeFinder
             }
 
             string instructions = "<br> Instructions: <br><br>";
+            //iterate through instructions
             for (int j = 0; j < recipe.recipes[0].analyzedInstructions.Length; j++)
             {
                 var currentInstruction = recipe.recipes[0].analyzedInstructions[j];
                 string steps = "";
+                //iterate through steps in the instructions
                 for (int k = 0; k < recipe.recipes[0].analyzedInstructions[j].steps.Length; k++)
                 {
                     var currentStep = currentInstruction.steps[k];
@@ -104,12 +135,13 @@ namespace recipeFinder
 
             string baseURL = "https://spoonacular.com/recipeImages/";
             ID = recipe.recipes[0].id;
+            //set private variables so that it is easier to retrieve for later use
             imageURL = baseURL + ID.ToString() + "-556x370." + recipe.recipes[0].imageType; 
             return ingredients + instructions;
-        }
+        }//end getRecipeInformation()
     }
 
- 
+ //RecipeObjects are special pasted jsons, that have been converted to classes. 
     public class RecipeObject
     {
         public Recipe[] recipes { get; set; }
