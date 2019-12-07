@@ -52,7 +52,7 @@
             </p>
         </div>
         <div class="form">
-                <asp:Label ID="Output" runat="server"></asp:Label>
+                <asp:Label ID="Output" runat="server"></asp:Label><br />
                 <asp:TextBox ID="UserName" runat="server" placeholder="Username"></asp:TextBox>
                 <asp:TextBox ID="Password" input type="password" runat="server" placeholder="Password"></asp:TextBox>
                 <asp:Button ID="Login" runat="server" OnClick="Login_Click" Text="Login" />

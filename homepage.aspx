@@ -26,7 +26,7 @@
     <div class="login-page">
         <div class="form">
             <p style="font-size: large;">
-                Enter Zip code.
+                Enter your zip code.<br /> <small>Our super smart recommendation generator will use this information (and local weather information) to find a perfect recipe.</small> 
                 <br />
                 <asp:TextBox ID="Zipcode" runat="server"></asp:TextBox>
                 <asp:Button ID="LoadRecipeGenerator" runat="server" Text="Load Recipe from Generator!" OnClick="Load_Recipe_Generator" />

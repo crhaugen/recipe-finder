@@ -22,7 +22,6 @@ namespace recipeFinder
                 Response.Redirect("Default.aspx");
             }
             initializeLabelsArray();
-            pageNumber = 1;
             load_recipes(pageNumber);
             ViewFraction.Text = "Currently seeing page " + pageNumber + "/ " + Math.Ceiling(totalNumOfRecipes / 9.0);
         }
@@ -30,7 +29,7 @@ namespace recipeFinder
         {
             if (pageNumber < Math.Ceiling(totalNumOfRecipes / 9.0))
             {
-                pageNumber++;
+                pageNumber = pageNumber+1;
             }
             else
             {
