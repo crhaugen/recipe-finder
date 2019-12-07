@@ -6,28 +6,34 @@ using System.Linq;
 using System.Net.Http;
 using System.Configuration;
 using System.Web;
+using System.Threading;
 
 namespace recipeFinder
 {
     public class weatherAPICall
     {
         public WeatherObject getWeather(string zip)
-        { 
+        {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://api.openweathermap.org/data/2.5/");
                 string weather_API_key = ConfigurationManager.AppSettings["WeatherAPI"];
-                HttpResponseMessage response = client.GetAsync("weather?zip=" + zip + "&APPID=" +weather_API_key).Result;
-                if (response.IsSuccessStatusCode)
+
+                for (int i = 0; i < 4; i++)
                 {
-                    string result = response.Content.ReadAsStringAsync().Result;
-                    Debug.WriteLine(result);
-                    WeatherObject weatherInfo = JsonConvert.DeserializeObject<WeatherObject>(result);
-                    return weatherInfo;
-                }
-                else
-                {
-                    Debug.WriteLine("Unsuccsessful request. Please make sure the city name is spelled correctly");
+                    HttpResponseMessage response = client.GetAsync("weather?zip=" + zip + "&APPID=" + weather_API_key).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = response.Content.ReadAsStringAsync().Result;
+                        Debug.WriteLine(result);
+                        WeatherObject weatherInfo = JsonConvert.DeserializeObject<WeatherObject>(result);
+                        return weatherInfo;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Unsuccsessful request. Status code: " + response.StatusCode);
+                        Thread.Sleep(2000 * i);
+                    }
                 }
             }
             return null;

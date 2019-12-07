@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Web;
 using System.Configuration;
+using System.Threading;
 
 namespace recipeFinder
 {
@@ -16,27 +17,32 @@ namespace recipeFinder
             string year = date.Year.ToString();
             string day = date.Day.ToString();
             string month = date.Month.ToString();
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("https://calendarific.com/api/v2/");
                 string holiday_key = ConfigurationManager.AppSettings["HolidayAPI"];
-                HttpResponseMessage response = client.GetAsync("holidays?&api_key=" + holiday_key + "&country=US&year=" + year + "&day=" + day + "&month=" + month).Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    string result = response.Content.ReadAsStringAsync().Result;
-                    Debug.WriteLine(result);
-                    HolidayObject holiday = JsonConvert.DeserializeObject<HolidayObject>(result);
-                    if (holiday.response.holidays.Length == 0)
-                    {
-                        return "no holiday today";
-                    }
-                    string holidayInfo = holiday.response.holidays[0].name;
-                    return holidayInfo;
-                }
-                else
-                {
-                    Debug.WriteLine("Unsuccsessful request.");
 
+                for(int i = 0; i < 4; i++)
+                {
+                    HttpResponseMessage response = client.GetAsync("holidays?&api_key=" + holiday_key + "&country=US&year=" + year + "&day=" + day + "&month=" + month).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = response.Content.ReadAsStringAsync().Result;
+                        Debug.WriteLine(result);
+                        HolidayObject holiday = JsonConvert.DeserializeObject<HolidayObject>(result);
+                        if (holiday.response.holidays.Length == 0)
+                        {
+                            return "no holiday today";
+                        }
+                        string holidayInfo = holiday.response.holidays[0].name;
+                        return holidayInfo;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Unsuccsessful request. Status code: " + response.StatusCode);
+                        Thread.Sleep(2000 * i);
+                    }
                 }
             }
             return null;

@@ -6,12 +6,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Web;
 using System.Configuration;
+using System.Threading;
+
 
 namespace recipeFinder
 {
     public class RecipeAPICall
     {
         string recipeName = "";
+        string imageURL = "";
+        int ID = 0;
 
         public string getRandomRecipe()
         {
@@ -19,22 +23,30 @@ namespace recipeFinder
             {
                 client.BaseAddress = new Uri("https://api.spoonacular.com/recipes/");
                 string recipe_key = ConfigurationManager.AppSettings["RecipeAPI"];
-                HttpResponseMessage response = client.GetAsync("random?number=1&apiKey=" + recipe_key).Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    string result = response.Content.ReadAsStringAsync().Result;
-                    //Debug.WriteLine(result);
-                    RecipeObject recipe = JsonConvert.DeserializeObject<RecipeObject>(result);
 
-                    return getRecipeInformation(recipe);
-                }
-                else
+                for (int i = 0; i < 4; i++)
                 {
-                    Debug.WriteLine("Unsuccsessful request.");
+                    HttpResponseMessage response = client.GetAsync("random?number=1&apiKey=" + recipe_key).Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = response.Content.ReadAsStringAsync().Result;
+                        RecipeObject recipe = JsonConvert.DeserializeObject<RecipeObject>(result);
 
+                        return getRecipeInformation(recipe);
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Unsuccsessful request. Status code: " + response.StatusCode);
+                        Thread.Sleep(2000 * i);
+                    }
                 }
             }
             return null;
+        }
+
+        public string getImgURL()
+        {
+            return imageURL;
         }
         public string getRecipeName()
         {
@@ -47,31 +59,16 @@ namespace recipeFinder
             {
                 client.BaseAddress = new Uri("https://api.spoonacular.com/recipes/");
                 string recipe_key = ConfigurationManager.AppSettings["RecipeAPI"];
-                HttpResponseMessage response = client.GetAsync("search?query=" + typeOfFood + "&number=1&apiKey=" + recipe_key).Result;
+                string url = "random?number=1&tags=" + typeOfFood + "&apiKey=" + recipe_key;
+                //"search?query=" + typeOfFood + "&number=1&apiKey=" + recipe_key
+                HttpResponseMessage response = client.GetAsync(url).Result;
                 if (response.IsSuccessStatusCode)
                 {
                     Debug.WriteLine("typeOfFood " + typeOfFood);
                     string result = response.Content.ReadAsStringAsync().Result;
-                    Rootobject recipe = JsonConvert.DeserializeObject<Rootobject>(result);
+                    RecipeObject recipe = JsonConvert.DeserializeObject<RecipeObject>(result);
 
-                    string id = recipe.results[0].id.ToString();
-                    HttpResponseMessage infoResponse = client.GetAsync(id + "/information?&apiKey=" + recipe_key).Result;
-
-                    if (infoResponse.IsSuccessStatusCode)
-                    {
-                        string infoResult = infoResponse.Content.ReadAsStringAsync().Result;
-                        Recipe recipeInfo = JsonConvert.DeserializeObject<Recipe>(infoResult);
-
-                        RecipeObject newRecipe = new RecipeObject();
-                        newRecipe.recipes = new Recipe[1];
-                        newRecipe.recipes[0] = recipeInfo;
-                        return getRecipeInformation(newRecipe);
-                    }
-                    else
-                    {
-                        Debug.WriteLine("Unsuccsessful request. ");
-                        return null;
-                    }
+                    return getRecipeInformation(recipe);
                 }
                 else
                 {
@@ -81,6 +78,7 @@ namespace recipeFinder
             }
         }
 
+        
         private string getRecipeInformation(RecipeObject recipe)
         {
             string ingredients = "Ingredients: <br><br>";
@@ -103,10 +101,15 @@ namespace recipeFinder
                 instructions = instructions + currentInstruction.name + steps;
             }
             recipeName = recipe.recipes[0].title;
+
+            string baseURL = "https://spoonacular.com/recipeImages/";
+            ID = recipe.recipes[0].id;
+            imageURL = baseURL + ID.ToString() + "-556x370." + recipe.recipes[0].imageType; 
             return ingredients + instructions;
         }
     }
 
+ 
     public class RecipeObject
     {
         public Recipe[] recipes { get; set; }

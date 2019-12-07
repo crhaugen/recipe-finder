@@ -1,0 +1,13 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="LoggedInMasterPage.master.cs" Inherits="recipeFinder.LoggedInMasterPage" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="topnav">
+        <a class="active" href="/homepage">Home Page</a>
+        <a href="/SavedRecipes">Saved Recipes</a>
+    </div>
+
+    <div class="container body-content">
+        <asp:ContentPlaceHolder ID="MainContent" runat="server">
+        </asp:ContentPlaceHolder>
+    </div>
+</asp:Content>

@@ -11,13 +11,14 @@ namespace recipeFinder
 {
     public partial class homepage : System.Web.UI.Page
     {
-        
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["User"] == null)
             {
                 Response.Redirect("Default.aspx");
             }
+            RecipeImage.Visible = false;
         }
 
         protected void Load_Recipe_Generator(object sender, EventArgs e)
@@ -25,22 +26,60 @@ namespace recipeFinder
             RecipeGenerator recipeGenerator = new RecipeGenerator();
             string foodType = recipeGenerator.generateRecipeType(Zipcode.Text);
             RecipeAPICall recipeCall = new RecipeAPICall();
-            RecipeInfo.Text = recipeCall.getRecipeBytype(foodType);
-            RecipeName.Text = recipeCall.getRecipeName();
+            string type = recipeCall.getRecipeBytype(foodType);
+            string name = recipeCall.getRecipeName();
+            string imgURL = recipeCall.getImgURL();
+
+            if (type == null || name == null)
+            {
+                RecipeInfo.Text = "Sorry. Could not load recipe at the moment, please try again later.";
+              
+            }
+            else
+            {
+                RecipeInfo.Text = type;
+                RecipeName.Text = name;
+                RecipeImage.ImageUrl = imgURL;
+            }
+          
         }
 
         protected void Load_Recipe_Random(object sender, EventArgs e)
         {
             RecipeAPICall recipeCall = new RecipeAPICall();
-            RecipeInfo.Text = recipeCall.getRandomRecipe();
-            RecipeName.Text = recipeCall.getRecipeName();
+
+            string intstructions = recipeCall.getRandomRecipe();
+            string name = recipeCall.getRecipeName();
+            string imgURL = recipeCall.getImgURL();
+
+            if (intstructions == null || name == null)
+            {
+                RecipeInfo.Text = "Sorry. Could not load recipe at the moment, please try again later.";
+
+            }
+            else
+            {
+                RecipeInfo.Text = intstructions;
+                RecipeName.Text = name;
+                
+                if(imgURL!= null)
+                {
+                    RecipeImage.Visible = true;
+                    RecipeImage.ImageUrl = imgURL;
+                }
+                else
+                {
+                    RecipeImage.Visible = false;
+                }
+               // IMG_URL.Text = imgURL;
+            }
 
         }
         protected void Is_Holiday(object sender, EventArgs e)
         {
             HolidayAPICall holiday = new HolidayAPICall();
             DateTime today = DateTime.Today;
-            HolidayInfo.Text = holiday.getHoliday(today);
+            //HolidayInfo.Text = holiday.getHoliday(today);
         }
 
         protected void Save_Recipe(object sender, EventArgs e)
@@ -50,11 +89,11 @@ namespace recipeFinder
                 SaveManager saved = new SaveManager();
                 string username = Session["User"].ToString();
                 saved.addRecipe(RecipeName.Text, RecipeInfo.Text, username);
-                HolidayInfo.Text = "Recipe Saved!";
+                Info.Text = "Recipe Saved!";
             }
             else
             {
-                HolidayInfo.Text = "No recipe to save. Please generate or load a recipe";
+                Info.Text = "No recipe to save. Please generate or load a recipe";
             }
         }
     }

@@ -12,7 +12,7 @@ namespace recipeFinder
     public partial class _Default : Page
     {
         UserHandler userClient = new UserHandler();
-
+        
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -28,19 +28,19 @@ namespace recipeFinder
             }
             else
             {
-                //Output.Text = "Login failed. Please try again!";
+                Output.Text = "Login failed. Please try again!";
             }
         }
 
         protected void CreateUser_Click(object sender, EventArgs e)
         {
-            if(userClient.userExist(newUserName.Text))
+            if (userClient.userExist(newUserName.Text))
             {
                 Output.Text = "User already exist with that name!";
             }
             else
             {
-                if(userClient.createUser(newUserName.Text, newPassword.Text, reNewPassword.Text))
+                if (userClient.createUser(newUserName.Text, newPassword.Text, reNewPassword.Text))
                 {
                     Output.Text = "User created!";
                 }
